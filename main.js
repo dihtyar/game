@@ -1,6 +1,9 @@
 const score = document.querySelector('.score'),
     start = document.querySelector('.start'),
-    gameArea = document.querySelector('.gameArea');
+    gameArea = document.querySelector('.gameArea'),
+    car = document.createElement('div');
+
+car.classList.add('car');
 
 start.addEventListener('click', startGame);
 document.addEventListener('keydown', startRun);
@@ -13,15 +16,37 @@ const keys = {
     ArrowLeft: false
 } 
 
+const settings = {
+    start: false,
+    score: 0,
+    speed: 3
+}
+
+
 function startGame () {
     start.classList.add('hide');
+    settings.start = true;
+    gameArea.appendChild(car);
+    requestAnimationFrame(playGame); 
 }
+
+function playGame () {
+    console.log('Play Game!');
+    // if(settings.start === true)
+    if(settings.start) {
+        requestAnimationFrame(playGame);
+    }
+    
+}
+
 
 function startRun(event) {
     event.preventDefault();
     console.log(event.key);
+    keys[event.key] = true;
 }
 
 function stopRun(event) {
     event.preventDefault();
+    keys[event.key] = false;
 }
