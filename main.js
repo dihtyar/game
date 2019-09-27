@@ -31,8 +31,9 @@ function getQuantityElements(heightElement) {
 
 function startGame () {
     start.classList.add('hide');
-
-    for (let i = 0; i < getQuantityElements(100); i++) {
+    gameArea.innerHTML = '';
+    
+    for (let i = 0; i < getQuantityElements(100) + 1; i++) {
         const line = document.createElement('div');
         line.classList.add('line');
         line.style.top = (i * 100) + 'px';
@@ -41,23 +42,29 @@ function startGame () {
     }
     for (let i = 0; i < getQuantityElements(100 * settings.traffic); i++) {
         const enemy = document.createElement('div');
+        let enemyImg = Math.floor(Math.random() * 2) + 1;
         enemy.classList.add('enemy');
         enemy.y = -100 * settings.traffic * (i + 1);
         enemy.style.left =  Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + 'px';
         enemy.style.top = enemy.y + 'px';
-        enemy.style.background = 'transparent url("./images/enemy.png") center/cover no-repeat';
+        enemy.style.background = `transparent url("./images/enemy${enemyImg}.png") center/cover no-repeat`;
         gameArea.appendChild(enemy);
     }
-
+    settings.score = 0;
     settings.start = true;
     gameArea.appendChild(car);
+    car.style.left = gameArea.offsetWidth/2 - car.offsetWidth/2;
+    car.style.top = 'auto';
+    car.style.bottom = '10px';
     settings.x = car.offsetLeft;
     settings.y = car.offsetTop;
     requestAnimationFrame(playGame); 
 }
 
 function playGame () {
-    console.log('Play Game!');
+    settings.score += settings.speed;
+    score.innerHTML = 'SCORE:<br>' + settings.score;
+    // console.log('Play Game!');
     // if(settings.start === true)
     moveRoad();
     moveEnemy();
@@ -108,8 +115,21 @@ function moveRoad() {
 
 function moveEnemy() {
     let enemy = document.querySelectorAll('.enemy');
-
+    
     enemy.forEach(function(item) {
+        let carRect = car.getBoundingClientRect();
+        let enemyRect = item.getBoundingClientRect();
+        
+        if (carRect.top <= enemyRect.bottom && 
+            carRect.right >= enemyRect.left &&
+            carRect.left <= enemyRect.right &&
+            carRect.bottom >= enemyRect.top) {
+            settings.start = false; 
+            console.log('DTP');
+            start.classList.remove('hide');
+            start.style.top = score.offsetHeight;
+        }
+
         item.y += settings.speed / 2;
         item.style.top = item.y + 'px';
         if (item.y >= document.documentElement.clientHeight) {
