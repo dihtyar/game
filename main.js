@@ -1,7 +1,12 @@
 const score = document.querySelector('.score'),
     start = document.querySelector('.start'),
     gameArea = document.querySelector('.gameArea'),
-    car = document.createElement('div');
+    car = document.createElement('div'),
+    music = document.createElement('embed');
+    
+music.setAttribute('src', './audio.mp3');
+music.setAttribute('type', 'audio/mp3');
+music.classList.add('music');
 
 car.classList.add('car');
 
@@ -24,7 +29,7 @@ const settings = {
 }
 
 function getQuantityElements(heightElement) {
-    return document.documentElement.clientHeight / heightElement + 1;
+    return Math.ceil(gameArea.offsetHeight / heightElement);
 }
 
 // console.log(getQuantityElements(200));
@@ -42,7 +47,7 @@ function startGame () {
     }
     for (let i = 0; i < getQuantityElements(100 * settings.traffic); i++) {
         const enemy = document.createElement('div');
-        let enemyImg = Math.floor(Math.random() * 2) + 1;
+        let enemyImg = Math.floor(Math.random() * 4) + 1;
         enemy.classList.add('enemy');
         enemy.y = -100 * settings.traffic * (i + 1);
         enemy.style.left =  Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + 'px';
@@ -53,6 +58,9 @@ function startGame () {
     settings.score = 0;
     settings.start = true;
     gameArea.appendChild(car);
+    music.setAttribute('autoplay', true);
+    music.setAttribute('controls', true);
+    gameArea.appendChild(music);
     car.style.left = gameArea.offsetWidth/2 - car.offsetWidth/2;
     car.style.top = 'auto';
     car.style.bottom = '10px';
@@ -86,6 +94,8 @@ function playGame () {
 
 
         requestAnimationFrame(playGame);
+    } else {
+        music.remove();
     }
     
 }
